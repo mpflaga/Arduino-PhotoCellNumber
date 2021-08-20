@@ -45,9 +45,11 @@ class PhotoCell : public movingAvg {
     void PrintPins();
     bool GetBit();
     void setThreshold(int thr);
+    void setInvert(bool invert_);
 
   protected:
     Pins pins;
+    bool invert;
 };
 
 class PhotoCellNumber {
@@ -73,5 +75,7 @@ class PhotoCellNumber {
     void enable();
     void setDebugMask(unsigned int mask);
     void setInterval( unsigned long periodA2D_, unsigned long periodUpdateAvg_ ); // periodA2D in ms to update the detected value from the running average.
+    void setInvert(bool invert_);
+
     int threshold = 100;
 };

@@ -54,6 +54,7 @@ PhotoCell::PhotoCell(Pins _pins, int samples) : movingAvg(samples)
 {
   // store the pins parameter that make up a LDR.
   pins = _pins;
+  invert = false;
 
   // initialize the pins so that one has internal pull up and the other is GND.
   pinMode(pins.sig, INPUT_PULLUP); // pin to measure signal.
@@ -80,7 +81,7 @@ void PhotoCell::PrintPins() {
 bool PhotoCell::GetBit() {
   // return a bit that is converted from the running average value compared to a threshold.
   bool value;
-  if ( getAvg() > pins.thr) {
+  if ( !invert ? (getAvg() > pins.thr) : (getAvg() < pins.thr)) {
     value = true;
   } else {
     value = false;
@@ -93,6 +94,10 @@ void PhotoCell::setThreshold(int thr) {
   pins.thr = thr;
 }
 
+void PhotoCell::setInvert(bool invert_) {
+  // incase the values need to be adjusted on the fly.
+  invert = invert_;
+}
 //constructor
 PhotoCellNumber::PhotoCellNumber(Pins xMotion_[], int nChannels_, int avgSize) {
   // set initial values.
@@ -117,6 +122,13 @@ void PhotoCellNumber::printArray() {
     ldr[i]->PrintPins();
   }
 };
+
+void PhotoCellNumber::setInvert(bool invert_) {
+  for (int i = 0; i < nChannels; i++)
+  {
+    ldr[i]->setInvert(invert_);
+  }
+}
 
 void PhotoCellNumber::setInterval(unsigned long periodA2D_, unsigned long periodUpdateAvg_) {
   unsigned long time_ = millis();
